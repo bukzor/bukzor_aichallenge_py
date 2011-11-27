@@ -1,0 +1,14 @@
+
+Simple strategy:
+
+* Keep spread out.
+* Assign the closest ant to grab food.
+* Run toward the closest ant when in trouble.
+* Attack when number is greater.
+
+* Keep track of food when it goes out of sight.
+* Anthill counts as food.
+
+* Don't spread out too far. Keep visibility adjacent to friends' visibility.
+* Know when you could be killed.
+

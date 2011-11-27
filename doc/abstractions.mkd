@@ -1,0 +1,31 @@
+
+Ant:
+
+* Has:
+ * anthill
+ * location
+ * plans
+ * motivations
+* Can
+ * move
+
+Anthill:
+
+* Has:
+ * location
+ * Ants
+
+World:
+
+* Has:
+ * food
+ * anthills
+ * ants
+
+Bot:
+
+* Has:
+ * input
+ * output
+ * world
+

@@ -1,0 +1,23 @@
+
+Hunger: Ants like to eat.
+
+* Proximity to food.
+* Colony deaths.
+
+Aggression: Ants don't like other ants
+
+* Proximity to hostile ants.
+* Discovery of anthill location.
+* Proximity to hostile anthill.
+
+Altruism: Ants are self-sacrificing creatures.
+
+* Proximity to friendly ants.
+* Proximity to friendly anthill.
+* Threat to friendly anthill.
+
+Curiosity: Ants need to know their environment.
+
+* Distance from friendly ants.
+* Colony hunger.
+

@@ -1,0 +1,5 @@
+
+A python entry for http://aichallenge.org
+
+ * based on: https://github.com/aichallenge/aichallenge/tree/epsilon/ants/dist/starter_bots/python
+
