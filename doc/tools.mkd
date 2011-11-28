@@ -1,0 +1,9 @@
+Tools:
+======
+
+lint
+----
+To make sure I don't introduce stupid bugs.
+ * Pylint
+ * pyflakes
+
