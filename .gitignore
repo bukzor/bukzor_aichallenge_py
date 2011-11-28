@@ -1,0 +1,4 @@
+.*.sw[nop]
+*.pyc
+ant-tools/game_logs/
+*.log
