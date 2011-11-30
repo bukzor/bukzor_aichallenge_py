@@ -14,19 +14,19 @@ class World(object):
 
         self.turns = gameparams['turns']
 
-        self.time = namedtuple('turn', 'load', 'turn_start')(
+        self.time = namedtuple('Time', 'turn load turn_start')(
                 gameparams['turntime'],
                 gameparams['loadtime'],
-                time(),
+                [],
         )
 
-        self.radius = namedtuple('view', 'attack', 'spawn')(
+        self.radius = namedtuple('Radius', 'view attack spawn')(
                 gameparams['viewradius2'],
                 gameparams['attackradius2'],
                 gameparams['spawnradius2'],
         )
 
-        self.list = namedtuple('hill', 'ant', 'dead', 'food')(
+        self.list = namedtuple('List', 'hill ant dead food')(
                 {}, {}, defaultdict(list), [],
         )
 
@@ -35,16 +35,16 @@ class World(object):
         self.map = Map(gameparams['rows'], gameparams['cols'])
 
         # These are initialized lazily
-        self.__cache = namedtuple('vision_offsets', 'vision')(None, None)
+        self.__cache = namedtuple('Cache', 'vision_offsets vision')([], [])
 
     def update(self, data):
         'parse engine input and update the world state'
 
         # start timer
-        self.time.turn_start = time()
+        self.time.turn_start.append(time())
         
         # reset vision
-        self.__cache.vision = None
+        del self.__cache.vision[:]
         
         # clear hill, ant and food data
         for row, col in (
@@ -59,12 +59,12 @@ class World(object):
         del self.list.food[:]
         
         # update map and create new ant and food lists
-        for line in data.split('\n'):
-            tokens = line.strip().lower().split()
-            if not tokens:
-                continue
-
+        for tokens in data:
             key = tokens[0]
+
+            if key == 'turn':
+                continue # Don't care!
+
             row = int(tokens[1])
             col = int(tokens[2])
             if len(tokens) == 3:
@@ -93,12 +93,12 @@ class World(object):
                     self.list.hill[(row, col)] = owner
                     continue
 
-            raise ValueError("Could not interpret input line: %r" % line)
+            raise ValueError("Could not interpret input tokens: %r" % tokens)
                         
     def time_remaining(self):
         "How much time is left?"
-        return self.time.turn - int(1000 * (time() - self.time.turn_start))
-    
+        return self.time.turn - int(1000 * (time() - self.time.turn_start[-1]))
+
     def my_hills(self):
         "Where are my hills?"
         return [loc for loc, owner in self.list.hill.items()
@@ -128,10 +128,9 @@ class World(object):
         "Which squares are visible to me?"
         # todo: this should return a Map of some kind
 
-        if self.__cache.vision is None:
-            if self.__cache.vision_offsets is None:
+        if not self.__cache.vision:
+            if not self.__cache.vision_offsets:
                 # precalculate squares around an ant to set as visible
-                self.__cache.vision_offsets = []
                 offset = int(sqrt(self.radius.view))
                 for d_row in range(-offset, offset+1):
                     for d_col in range(-offset, offset+1):
@@ -145,9 +144,9 @@ class World(object):
                             ))
             # set all spaces as not visible
             # loop through ants and set all squares around ant as visible
-            self.__cache.vision = [
+            self.__cache.vision[:] = (
                     [False]*self.map.cols for row in range(self.map.rows)
-            ]
+            )
             for ant in self.my_ants():
                 a_row, a_col = ant
                 for v_row, v_col in self.__cache.vision_offsets:
